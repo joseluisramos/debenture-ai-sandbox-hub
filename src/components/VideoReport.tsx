@@ -40,7 +40,7 @@ const VideoReport = () => {
         ) : (
           <div className="space-y-3">
             <p className="font-medium mb-2">Your Personalized Portfolio Report</p>
-            <video controls width="100%" className="rounded-md" src="/demo-report.mp4">
+            <video controls width="100%" className="rounded-md" src="public/demo-report.mp4">
               Your browser does not support the video tag.
             </video>
             <p className="text-sm text-gsb-muted">
