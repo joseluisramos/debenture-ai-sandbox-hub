@@ -1,9 +1,11 @@
+
 import { useState } from "react";
 import { useFinance } from "@/context/FinanceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Send } from "lucide-react";
 
 const FinancialChatbot = () => {
   const { chatHistory, addChatMessage, incrementConservativeQuestions } = useFinance();
@@ -61,6 +63,13 @@ const FinancialChatbot = () => {
     setUserInput("");
   };
 
+  // Handle key press for Enter key
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSendMessage();
+    }
+  };
+
   return (
     <Card className="w-full">
       <CardHeader className="bg-gsb-secondary text-white">
@@ -88,3 +97,36 @@ const FinancialChatbot = () => {
                     }`}
                   >
                     <div
+                      className={`max-w-[80%] rounded-lg p-3 ${
+                        message.role === "user"
+                          ? "bg-gsb-primary text-white"
+                          : "bg-gray-100 text-gray-800"
+                      }`}
+                    >
+                      {message.content}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </ScrollArea>
+          <div className="flex gap-2">
+            <Input
+              value={userInput}
+              onChange={(e) => setUserInput(e.target.value)}
+              onKeyDown={handleKeyPress}
+              placeholder="Ask a question about your investment..."
+              className="flex-1"
+            />
+            <Button onClick={handleSendMessage} disabled={!userInput.trim()}>
+              <Send className="h-4 w-4 mr-2" />
+              Send
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+export default FinancialChatbot;
