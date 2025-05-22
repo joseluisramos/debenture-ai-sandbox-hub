@@ -36,7 +36,7 @@ const RiskProfile = () => {
   return (
     <Card className="w-full">
       <CardHeader className="bg-gsb-headerBg text-gsb-primary">
-        <CardTitle className="text-lg">4. Real-Time Adaptive Risk Profile</CardTitle>
+        <CardTitle>4. Real-Time Adaptive Risk Profile</CardTitle>
       </CardHeader>
       <CardContent className="p-4">
         <div className="flex flex-col items-center space-y-4">

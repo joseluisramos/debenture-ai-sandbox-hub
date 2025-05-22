@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useFinance } from "@/context/FinanceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -111,7 +112,7 @@ const MacroSimulator = () => {
   return (
     <Card className="w-full">
       <CardHeader className="bg-gsb-headerBg text-gsb-primary">
-        <CardTitle className="text-lg">1. Dynamic Macro Scenario Simulator</CardTitle>
+        <CardTitle>1. Dynamic Macro Scenario Simulator</CardTitle>
       </CardHeader>
       <CardContent className="p-4 space-y-6">
         <div className="flex justify-end">

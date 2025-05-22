@@ -73,7 +73,7 @@ const FinancialChatbot = () => {
   return (
     <Card className="w-full">
       <CardHeader className="bg-gsb-headerBg text-gsb-primary">
-        <CardTitle className="text-lg">2. Your AI Chat</CardTitle>
+        <CardTitle>2. Your AI Chat</CardTitle>
       </CardHeader>
       <CardContent className="p-4">
         <div className="flex flex-col h-[300px]">
