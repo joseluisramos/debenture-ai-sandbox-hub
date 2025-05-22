@@ -1,6 +1,7 @@
 
 import { FinanceProvider } from "@/context/FinanceContext";
-import ClientPositionCard from "@/components/ClientPositionCard";
+import PortfolioSummary from "@/components/PortfolioSummary";
+import DebtureDetails from "@/components/DebtureDetails";
 import DashboardHeader from "@/components/DashboardHeader";
 import WelcomeBar from "@/components/WelcomeBar";
 
@@ -13,9 +14,14 @@ const Index = () => {
         
         <div className="container mx-auto py-6 px-4 flex-1">
           <div className="space-y-6">
-            {/* Only showing Client Position card on initial view */}
+            {/* Portfolio Summary Card */}
             <div className="mb-6">
-              <ClientPositionCard />
+              <PortfolioSummary />
+            </div>
+            
+            {/* Debenture Details */}
+            <div className="mb-6">
+              <DebtureDetails />
             </div>
           </div>
         </div>
