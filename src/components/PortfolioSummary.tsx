@@ -13,14 +13,14 @@ const PortfolioSummary = () => {
 
   return (
     <Card className="w-full border bg-white">
-      <CardContent className="p-4">
-        <h2 className="text-lg font-medium text-black mb-1">Portfolio Summary</h2>
-        <p className="text-gray-600 mb-4 text-sm">Overview of your investments</p>
+      <CardContent className="p-3">
+        <h2 className="text-sm font-medium text-black mb-0">Portfolio Summary</h2>
+        <p className="text-gray-600 mb-2 text-xs">Overview of your investments</p>
         
-        <div className="flex flex-col items-center mb-4">
-          <h3 className="text-4xl font-medium mb-4">£{totalValue.toLocaleString()}.00</h3>
+        <div className="flex flex-col items-center">
+          <h3 className="text-2xl font-medium mb-2">£{totalValue.toLocaleString()}.00</h3>
           
-          <div className="w-full h-56 max-w-xs mx-auto">
+          <div className="w-full h-40 max-w-xs mx-auto">
             <ChartContainer 
               config={{
                 ordinary: { color: "#6b0d0d" },
@@ -32,8 +32,8 @@ const PortfolioSummary = () => {
                   data={portfolioData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={60}
-                  outerRadius={90}
+                  innerRadius={40}
+                  outerRadius={60}
                   paddingAngle={0}
                   dataKey="value"
                 >
@@ -46,14 +46,14 @@ const PortfolioSummary = () => {
             </ChartContainer>
           </div>
           
-          <div className="flex flex-wrap justify-center gap-6 mt-3">
+          <div className="flex flex-wrap justify-center gap-4 mt-1">
             {portfolioData.map((entry, index) => (
               <div key={index} className="flex items-center">
                 <div 
-                  className="w-3 h-3 mr-2" 
+                  className="w-2 h-2 mr-1" 
                   style={{ backgroundColor: entry.color }}
                 ></div>
-                <span className="text-sm">{entry.name}: £{entry.value.toLocaleString()}</span>
+                <span className="text-xs">{entry.name}: £{entry.value.toLocaleString()}</span>
               </div>
             ))}
           </div>
