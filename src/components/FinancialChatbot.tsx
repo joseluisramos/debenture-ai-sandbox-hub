@@ -31,7 +31,7 @@ const FinancialChatbot = () => {
   // Send message handler
   const handleSendMessage = async () => {
     if (!userInput.trim()) return;
-    if (!OPENAI_API_KEY || OPENAI_API_KEY === "sk-your-api-key-goes-here") {
+    if (!OPENAI_API_KEY) {
       toast.error("API key not configured. Please update the code with your OpenAI API key.");
       return;
     }
