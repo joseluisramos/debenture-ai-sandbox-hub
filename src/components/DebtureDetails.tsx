@@ -8,7 +8,7 @@ const DebtureDetails = () => {
 
   return (
     <Card className="w-full border bg-white">
-      <CardHeader className="bg-gsb-primary text-white py-3">
+      <CardHeader className="bg-red-700 text-white py-3">
         <CardTitle className="text-base font-medium">5 Year Economic Development Registered Debentures</CardTitle>
       </CardHeader>
       <CardContent className="p-0">
