@@ -5,8 +5,8 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
 const PortfolioSummary = () => {
   const portfolioData = [
-    { name: "Ordinary Deposit", value: 23000, color: "#6b0d0d" },
-    { name: "Debentures", value: 5000, color: "#d4af37" }
+    { name: "Debentures", value: 50000, color: "#6b0d0d" },
+    { name: "Ordinary Deposit", value: 8000, color: "#d4af37" }
   ];
   
   const totalValue = portfolioData.reduce((sum, item) => sum + item.value, 0);
