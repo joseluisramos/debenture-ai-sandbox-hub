@@ -5,20 +5,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Key, X } from "lucide-react";
+import { Send } from "lucide-react";
 import { toast } from "@/components/ui/sonner";
-import { Label } from "@/components/ui/label";
 
 const FinancialChatbot = () => {
+  // Replace this string with your actual OpenAI API key
+  const OPENAI_API_KEY = "sk-your-api-key-goes-here";
+  
   const { chatHistory, addChatMessage, incrementConservativeQuestions } = useFinance();
   const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [apiKey, setApiKey] = useState("");
-  const [showApiInput, setShowApiInput] = useState(false);
-  const [storedApiKey, setStoredApiKey] = useState(() => {
-    const savedKey = localStorage.getItem("openai_api_key");
-    return savedKey || "";
-  });
   
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
@@ -32,32 +28,11 @@ const FinancialChatbot = () => {
     }
   }, [chatHistory]);
 
-  // Save API key to localStorage when it changes
-  const handleSaveApiKey = () => {
-    if (apiKey.trim()) {
-      localStorage.setItem("openai_api_key", apiKey);
-      setStoredApiKey(apiKey);
-      setShowApiInput(false);
-      toast.success("API key saved successfully");
-    } else {
-      toast.error("Please enter a valid API key");
-    }
-  };
-
-  // Handle removing API key
-  const handleRemoveApiKey = () => {
-    localStorage.removeItem("openai_api_key");
-    setStoredApiKey("");
-    setApiKey("");
-    toast.success("API key removed");
-  };
-
   // Send message handler
   const handleSendMessage = async () => {
     if (!userInput.trim()) return;
-    if (!storedApiKey) {
-      toast.error("Please add your OpenAI API key first");
-      setShowApiInput(true);
+    if (!OPENAI_API_KEY || OPENAI_API_KEY === "sk-your-api-key-goes-here") {
+      toast.error("API key not configured. Please update the code with your OpenAI API key.");
       return;
     }
 
@@ -78,7 +53,7 @@ const FinancialChatbot = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${storedApiKey}`,
+          Authorization: `Bearer ${OPENAI_API_KEY}`,
         },
         body: JSON.stringify({
           model: "gpt-4o-mini",
@@ -118,7 +93,7 @@ const FinancialChatbot = () => {
       // Add error response to chat
       addChatMessage({ 
         role: "assistant", 
-        content: "Lo siento, no pude procesar tu consulta en este momento. Por favor, verifica tu API key o inténtalo de nuevo más tarde." 
+        content: "Lo siento, no pude procesar tu consulta en este momento. Por favor, inténtalo de nuevo más tarde." 
       });
     } finally {
       setIsLoading(false);
@@ -137,46 +112,8 @@ const FinancialChatbot = () => {
     <Card className="w-full">
       <CardHeader className="bg-gsb-headerBg text-gsb-primary flex flex-row justify-between items-center">
         <CardTitle>2. Your AI Chat</CardTitle>
-        <Button 
-          variant="ghost" 
-          size="sm"
-          onClick={() => setShowApiInput(!showApiInput)}
-          className="flex items-center gap-1"
-        >
-          <Key className="h-4 w-4" />
-          {storedApiKey ? "Change API Key" : "Add API Key"}
-        </Button>
       </CardHeader>
       <CardContent className="p-4">
-        {showApiInput && (
-          <div className="mb-4 p-3 border rounded-md bg-gray-50">
-            <Label htmlFor="apiKey" className="mb-1 block">OpenAI API Key:</Label>
-            <div className="flex gap-2">
-              <Input
-                id="apiKey"
-                type="password"
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                placeholder="sk-..."
-                className="flex-1"
-              />
-              <Button onClick={handleSaveApiKey} size="sm">Save</Button>
-              {storedApiKey && (
-                <Button 
-                  onClick={handleRemoveApiKey} 
-                  variant="outline" 
-                  size="sm"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              )}
-            </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              Tu API key se guardará solo en tu navegador y nunca será enviada a nuestros servidores.
-            </p>
-          </div>
-        )}
-        
         <div className="flex flex-col h-[300px]">
           <ScrollArea className="flex-1 p-4 border rounded-md mb-4 bg-white" ref={scrollAreaRef}>
             {chatHistory.length === 0 ? (
@@ -216,13 +153,13 @@ const FinancialChatbot = () => {
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
               onKeyDown={handleKeyPress}
-              placeholder={storedApiKey ? "Ask a question about your investment..." : "Add your OpenAI API key first"}
+              placeholder="Ask a question about your investment..."
               className="flex-1"
-              disabled={isLoading || !storedApiKey}
+              disabled={isLoading}
             />
             <Button 
               onClick={handleSendMessage} 
-              disabled={isLoading || !userInput.trim() || !storedApiKey}
+              disabled={isLoading || !userInput.trim()}
             >
               {isLoading ? (
                 <span className="h-4 w-4 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
@@ -232,14 +169,6 @@ const FinancialChatbot = () => {
               {isLoading ? "Sending..." : "Send"}
             </Button>
           </div>
-          {!storedApiKey && !showApiInput && (
-            <p className="text-xs text-center text-muted-foreground mt-2">
-              <Button variant="link" onClick={() => setShowApiInput(true)}>
-                Añade tu API key de OpenAI
-              </Button> 
-              para utilizar el chat
-            </p>
-          )}
         </div>
       </CardContent>
     </Card>
