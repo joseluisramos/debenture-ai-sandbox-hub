@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useFinance } from "@/context/FinanceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
