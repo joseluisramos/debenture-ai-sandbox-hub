@@ -6,27 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send } from "lucide-react";
+import { toast } from "@/components/ui/sonner";
 
 const FinancialChatbot = () => {
   const { chatHistory, addChatMessage, incrementConservativeQuestions } = useFinance();
   const [userInput, setUserInput] = useState("");
-
-  // Preloaded Q&A pairs
-  const qaPairs: Record<string, string> = {
-    "how will the next rate hike affect the 5-year bond?":
-      "A +1% hike lowers its market price by ~5% over 12 months.",
-    "should i move my balance into the children's account?":
-      "The children's account yields 0.5% less but has no fees—ideal for long-term savings.",
-    "what happens if inflation increases?":
-      "Higher inflation typically reduces the real return of fixed-rate bonds. Your debenture would maintain its nominal value but lose purchasing power.",
-    "is this a good time to invest in debentures?":
-      "With current economic indicators, debentures offer stable income but limited growth potential. Consider your risk tolerance and time horizon.",
-    "how safe are these investments?":
-      "Gibraltar Savings Bank debentures are backed by the government and considered low-risk investments, suitable for conservative portfolios."
-  };
+  const [isLoading, setIsLoading] = useState(false);
 
   // Send message handler
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!userInput.trim()) return;
 
     // Add user message to chat
@@ -38,34 +26,60 @@ const FinancialChatbot = () => {
       incrementConservativeQuestions();
     }
 
-    // Find matching response or use default
-    const normalizedInput = userInput.toLowerCase().trim();
-    let botResponse = "I don't have specific information on that query. Please contact our financial advisors for detailed guidance.";
+    setIsLoading(true);
 
-    // Check for exact or partial matches in our QA pairs
-    for (const [question, answer] of Object.entries(qaPairs)) {
-      if (
-        normalizedInput === question ||
-        normalizedInput.includes(question) ||
-        question.includes(normalizedInput)
-      ) {
-        botResponse = answer;
-        break;
+    try {
+      // Make API call to OpenAI
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [
+            {
+              role: "system",
+              content: "You are a helpful financial advisor assistant. You provide accurate, concise information about investments, bonds, savings accounts, and general financial advice. Focus on providing helpful advice while acknowledging the limitations of digital financial advice."
+            },
+            {
+              role: "user",
+              content: userInput
+            }
+          ],
+          temperature: 0.7,
+          max_tokens: 500
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`API request failed with status ${response.status}`);
       }
+
+      const data = await response.json();
+      const aiResponse = data.choices[0].message.content;
+      
+      // Add AI response to chat
+      addChatMessage({ role: "assistant", content: aiResponse });
+    } catch (error) {
+      console.error("Error calling OpenAI API:", error);
+      toast.error("Failed to get a response. Please try again later.");
+      
+      // Add error response to chat
+      addChatMessage({ 
+        role: "assistant", 
+        content: "I'm sorry, I'm having trouble connecting to my knowledge base right now. Please try again later."
+      });
+    } finally {
+      setIsLoading(false);
+      setUserInput("");
     }
-
-    // Add bot response with slight delay for realism
-    setTimeout(() => {
-      addChatMessage({ role: "assistant", content: botResponse });
-    }, 500);
-
-    // Clear input
-    setUserInput("");
   };
 
   // Handle key press for Enter key
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && !isLoading) {
       handleSendMessage();
     }
   };
@@ -117,10 +131,15 @@ const FinancialChatbot = () => {
               onKeyDown={handleKeyPress}
               placeholder="Ask a question about your investment..."
               className="flex-1"
+              disabled={isLoading}
             />
-            <Button onClick={handleSendMessage} disabled={!userInput.trim()}>
-              <Send className="h-4 w-4 mr-2" />
-              Send
+            <Button onClick={handleSendMessage} disabled={isLoading || !userInput.trim()}>
+              {isLoading ? (
+                <span className="h-4 w-4 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+              ) : (
+                <Send className="h-4 w-4 mr-2" />
+              )}
+              {isLoading ? "Sending..." : "Send"}
             </Button>
           </div>
         </div>
