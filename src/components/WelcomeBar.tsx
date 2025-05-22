@@ -7,7 +7,6 @@ const WelcomeBar = () => {
       <div className="container mx-auto py-4 px-4 flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold text-[#6b0d0d]">Welcome, Joe</h1>
-          <p className="text-gray-600">Your personalized dashboard</p>
         </div>
         <div>
           <Button variant="outline" className="border-[#6b0d0d] text-[#6b0d0d]">
