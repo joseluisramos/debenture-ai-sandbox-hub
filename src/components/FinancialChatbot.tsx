@@ -10,7 +10,7 @@ import { toast } from "@/components/ui/sonner";
 
 const FinancialChatbot = () => {
   // Replace this string with your actual OpenAI API key
-  const OPENAI_API_KEY = "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";
+  const OPENAI_API_KEY = "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";
   
   const { chatHistory, addChatMessage, incrementConservativeQuestions } = useFinance();
   const [userInput, setUserInput] = useState("");
