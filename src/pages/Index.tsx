@@ -7,17 +7,17 @@ import OpportunityAlerts from "@/components/OpportunityAlerts";
 import RiskProfile from "@/components/RiskProfile";
 import LiquidityForecasting from "@/components/LiquidityForecasting";
 import VideoReport from "@/components/VideoReport";
+import DashboardHeader from "@/components/DashboardHeader";
+import WelcomeBar from "@/components/WelcomeBar";
 
 const Index = () => {
   return (
     <FinanceProvider>
-      <div className="min-h-screen bg-gray-50">
-        <div className="container mx-auto py-6 px-4">
-          <header className="mb-6">
-            <h1 className="text-2xl font-bold text-gsb-primary mb-2">Gibraltar Savings Bank</h1>
-            <h2 className="text-lg text-gsb-secondary">AI-Powered Finance Playground</h2>
-          </header>
-          
+      <div className="min-h-screen bg-gray-50 flex flex-col">
+        <DashboardHeader />
+        <WelcomeBar />
+        
+        <div className="container mx-auto py-6 px-4 flex-1">
           <div className="space-y-6">
             {/* Client Position */}
             <div className="mb-6">
