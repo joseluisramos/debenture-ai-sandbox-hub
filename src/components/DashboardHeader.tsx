@@ -39,7 +39,7 @@ const DashboardHeader = () => {
         </div>
         
         <div className="flex items-center space-x-4">
-          <Button variant="ghost" size="icon" className="text-white/70 hover:bg-transparent cursor-not-allowed" disabled>
+          <Button variant="ghost" size="icon" className="text-white hover:bg-white/10">
             <Bell className="h-5 w-5" />
           </Button>
           <Button variant="ghost" size="icon" className="text-white/70 hover:bg-transparent cursor-not-allowed" disabled>
