@@ -18,9 +18,10 @@ const Dashboard = () => {
           <h1 className="text-2xl font-bold text-gsb-primary mb-6">Dashboard</h1>
           
           <div className="space-y-6">
-            {/* First Row */}
-            <div className="grid grid-cols-1 gap-6 mb-6">
+            {/* First Row - MacroSimulator and FinancialChatbot side by side */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <MacroSimulator />
+              <FinancialChatbot />
             </div>
             
             {/* Second Row */}
@@ -33,11 +34,6 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <VideoReport />
               <LiquidityForecasting />
-            </div>
-            
-            {/* Fourth Row */}
-            <div className="grid grid-cols-1 gap-6 mb-6">
-              <FinancialChatbot />
             </div>
           </div>
         </div>
