@@ -24,9 +24,9 @@ const DashboardHeader = () => {
           
           <nav className="hidden md:flex items-center ml-8 space-x-6">
             <Link to="/dashboard" className="hover:underline font-medium">Dashboard</Link>
-            <Link to="#" className="hover:underline font-medium">Accounts</Link>
-            <Link to="#" className="hover:underline font-medium">Documents</Link>
-            <Link to="#" className="hover:underline font-medium">Simulator</Link>
+            <span className="text-white/70 cursor-not-allowed font-medium">Accounts</span>
+            <span className="text-white/70 cursor-not-allowed font-medium">Documents</span>
+            <span className="text-white/70 cursor-not-allowed font-medium">Simulator</span>
           </nav>
         </div>
         
