@@ -31,10 +31,10 @@ const DashboardHeader = () => {
           </div>
           
           <nav className="hidden md:flex items-center ml-8 space-x-6">
+            <Link to="/home" className="hover:underline font-medium">Home</Link>
             <Link to="/dashboard" className="hover:underline font-medium">Dashboard</Link>
             <span className="text-white/70 cursor-not-allowed font-medium">Accounts</span>
             <span className="text-white/70 cursor-not-allowed font-medium">Documents</span>
-            <span className="text-white/70 cursor-not-allowed font-medium">Simulator</span>
           </nav>
         </div>
         
