@@ -11,9 +11,9 @@ const DashboardHeader = () => {
           <div className="flex items-center">
             <div className="h-10 w-10 flex items-center justify-center">
               <img 
-                src="/placeholder.svg" 
+                src="/lovable-uploads/d59127df-7730-412d-9679-d47eb083448b.png" 
                 alt="GSB Logo" 
-                className="h-8 w-8"
+                className="h-8 w-8 object-contain"
               />
             </div>
             <div className="ml-2">
