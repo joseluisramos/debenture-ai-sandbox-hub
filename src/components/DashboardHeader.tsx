@@ -1,7 +1,15 @@
 
 import { Button } from "@/components/ui/button";
-import { Bell, User } from "lucide-react";
+import { Bell, User, LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const DashboardHeader = () => {
   return (
@@ -47,9 +55,37 @@ const DashboardHeader = () => {
               </div>
             </Button>
           </div>
-          <div className="bg-white text-[#6b0d0d] px-3 py-1 rounded-md font-medium">
-            JL
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="bg-white text-[#6b0d0d] px-3 py-1 rounded-md font-medium h-auto hover:bg-white/90">
+                JL
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel className="font-normal">
+                <div className="font-medium">Joe Demo</div>
+                <div className="text-xs text-muted-foreground">demo@gsb.gi</div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem disabled className="cursor-not-allowed">
+                Profile Settings
+              </DropdownMenuItem>
+              <DropdownMenuItem disabled className="cursor-not-allowed">
+                Security &amp; Activity
+              </DropdownMenuItem>
+              <DropdownMenuItem disabled className="cursor-not-allowed">
+                Link Accounts
+              </DropdownMenuItem>
+              <DropdownMenuItem disabled className="cursor-not-allowed">
+                Certificates &amp; Statements
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Logout</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </header>
