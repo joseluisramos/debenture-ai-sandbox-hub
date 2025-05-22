@@ -13,14 +13,14 @@ const PortfolioSummary = () => {
 
   return (
     <Card className="w-full border bg-white">
-      <CardContent className="p-6">
-        <h2 className="text-2xl font-serif text-gsb-primary font-bold mb-1">Portfolio Summary</h2>
-        <p className="text-gray-600 mb-6">Overview of your investments</p>
+      <CardContent className="p-4">
+        <h2 className="text-lg font-medium text-black mb-1">Portfolio Summary</h2>
+        <p className="text-gray-600 mb-4 text-sm">Overview of your investments</p>
         
-        <div className="flex flex-col items-center mb-6">
-          <h3 className="text-5xl font-serif font-bold mb-4">£{totalValue.toLocaleString()}.00</h3>
+        <div className="flex flex-col items-center mb-4">
+          <h3 className="text-4xl font-medium mb-4">£{totalValue.toLocaleString()}.00</h3>
           
-          <div className="w-full h-64 max-w-xs mx-auto">
+          <div className="w-full h-56 max-w-xs mx-auto">
             <ChartContainer 
               config={{
                 ordinary: { color: "#6b0d0d" },
@@ -46,14 +46,14 @@ const PortfolioSummary = () => {
             </ChartContainer>
           </div>
           
-          <div className="flex flex-wrap justify-center gap-6 mt-4">
+          <div className="flex flex-wrap justify-center gap-6 mt-3">
             {portfolioData.map((entry, index) => (
               <div key={index} className="flex items-center">
                 <div 
-                  className="w-4 h-4 mr-2" 
+                  className="w-3 h-3 mr-2" 
                   style={{ backgroundColor: entry.color }}
                 ></div>
-                <span>{entry.name}: £{entry.value.toLocaleString()}</span>
+                <span className="text-sm">{entry.name}: £{entry.value.toLocaleString()}</span>
               </div>
             ))}
           </div>
