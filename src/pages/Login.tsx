@@ -12,7 +12,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   
   const handleDemo = () => {
-    navigate("/dashboard");
+    navigate("/home");
   };
 
   return (

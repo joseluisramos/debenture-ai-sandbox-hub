@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Bell, User, LogOut } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +12,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const DashboardHeader = () => {
+  const navigate = useNavigate();
+  
+  const handleLogout = () => {
+    navigate("/");
+  };
+
   return (
     <header className="bg-[#6b0d0d] text-white w-full">
       <div className="container mx-auto flex items-center justify-between py-3 px-4">
@@ -80,7 +86,7 @@ const DashboardHeader = () => {
                 Certificates &amp; Statements
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Logout</span>
               </DropdownMenuItem>
