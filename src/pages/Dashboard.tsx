@@ -15,7 +15,7 @@ const Dashboard = () => {
         <DashboardHeader />
         
         <div className="container mx-auto py-6 px-4 flex-1">
-          <h1 className="text-2xl font-bold text-[#6b0d0d] mb-6">Dashboard</h1>
+          <h1 className="text-2xl font-bold text-gsb-primary mb-6">Dashboard</h1>
           
           <div className="space-y-6">
             {/* First Row */}

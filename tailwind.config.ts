@@ -64,9 +64,9 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
                 gsb: {
-                    primary: '#0056b8',
-                    secondary: '#003c7d',
-                    accent: '#e6f0ff',
+                    primary: '#6b0d0d',       // Changed to darker red
+                    secondary: '#8b2121',     // Changed to lighter red
+                    accent: '#f9e9e9',        // Changed to light red background
                     success: '#008450',
                     warning: '#EAA300',
                     danger: '#D13438',

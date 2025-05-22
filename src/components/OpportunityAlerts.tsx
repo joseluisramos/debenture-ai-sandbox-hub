@@ -15,13 +15,13 @@ const OpportunityAlerts = () => {
         return "border-gsb-warning bg-yellow-50";
       case 'info':
       default:
-        return "border-gsb-primary bg-blue-50";
+        return "border-gsb-primary bg-gsb-accent";
     }
   };
 
   return (
     <Card className="w-full">
-      <CardHeader className="bg-gsb-secondary text-white">
+      <CardHeader className="bg-gsb-primary text-white">
         <CardTitle className="text-lg">3. Unexpected Opportunity Alerts</CardTitle>
       </CardHeader>
       <CardContent className="p-4">

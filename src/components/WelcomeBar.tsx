@@ -3,15 +3,15 @@ import { Button } from "@/components/ui/button";
 
 const WelcomeBar = () => {
   return (
-    <div className="bg-gray-50 border-b border-gray-200 w-full">
+    <div className="bg-gsb-accent border-b border-gray-200 w-full">
       <div className="container mx-auto py-4 px-4 flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-[#6b0d0d]">Welcome, Joe</h1>
+          <h1 className="text-2xl font-bold text-gsb-primary">Welcome, Joe</h1>
         </div>
         <div>
           <Button 
             variant="outline" 
-            className="border-[#6b0d0d] text-[#6b0d0d] opacity-70 cursor-not-allowed" 
+            className="border-gsb-primary text-gsb-primary opacity-70 cursor-not-allowed" 
             disabled={true}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
