@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { useFinance } from "@/context/FinanceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -245,12 +244,7 @@ const FinancialChatbot = () => {
           <ScrollArea className="flex-1 p-4 border rounded-md mb-4 bg-white" ref={scrollAreaRef}>
             {chatHistory.length === 0 ? (
               <div className="text-center text-gsb-muted p-4">
-                <p>Ask questions about your investment to the financial assistant.</p>
-                <p className="text-sm mt-2">Try questions like:</p>
-                <ul className="text-sm mt-1 text-gsb-primary">
-                  <li>"How will the next rate hike affect my investment?"</li>
-                  <li>"What is the risk level of this investment?"</li>
-                </ul>
+                <p>Start a conversation with the financial assistant.</p>
               </div>
             ) : (
               <div className="space-y-4">
