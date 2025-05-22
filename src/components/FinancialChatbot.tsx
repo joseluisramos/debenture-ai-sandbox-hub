@@ -274,7 +274,7 @@ const FinancialChatbot = () => {
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
               onKeyDown={handleKeyPress}
-              placeholder="Ask a question about your investment..."
+              placeholder="Ask any questions..."
               className="flex-1"
               disabled={isLoading}
             />
