@@ -51,46 +51,46 @@ const FinancialChatbot = () => {
     const normalizedInput = input.toLowerCase();
     
     // Check for common questions and provide appropriate responses
-    if (normalizedInput.includes("tasa") || normalizedInput.includes("interés") || normalizedInput.includes("rendimiento")) {
-      return "Los Debentures de Desarrollo Económico ofrecen actualmente una tasa de interés fija del 4.0%. Esta tasa es garantizada durante todo el período de inversión de 5 años.";
+    if (normalizedInput.includes("rate") || normalizedInput.includes("interest") || normalizedInput.includes("yield")) {
+      return "Economic Development Debentures currently offer a fixed interest rate of 4.0%. This rate is guaranteed throughout the entire 5-year investment period.";
     }
     
-    if (normalizedInput.includes("plazo") || normalizedInput.includes("vencimiento") || normalizedInput.includes("duración")) {
-      return "El plazo de los Debentures de Desarrollo Económico es de 5 años, con fecha de vencimiento en junio de 2028. No se permiten retiros anticipados sin penalización.";
+    if (normalizedInput.includes("term") || normalizedInput.includes("maturity") || normalizedInput.includes("duration")) {
+      return "The term for Economic Development Debentures is 5 years, with a maturity date in June 2028. Early withdrawals are not permitted without penalty.";
     }
     
-    if (normalizedInput.includes("riesgo") || normalizedInput.includes("seguro") || normalizedInput.includes("garantía") || normalizedInput.includes("protección")) {
-      return "Los Debentures de Desarrollo Económico tienen un perfil de riesgo moderado. Están respaldados por proyectos de infraestructura del gobierno, pero no están asegurados por el Esquema de Compensación de Servicios Financieros como los depósitos regulares.";
+    if (normalizedInput.includes("risk") || normalizedInput.includes("safe") || normalizedInput.includes("guarantee") || normalizedInput.includes("protection")) {
+      return "Economic Development Debentures have a moderate risk profile. They are backed by government infrastructure projects but are not insured by the Financial Services Compensation Scheme like regular deposits.";
     }
     
-    if (normalizedInput.includes("impuesto") || normalizedInput.includes("fiscal") || normalizedInput.includes("tributo")) {
-      return "Los rendimientos de los Debentures están sujetos a impuestos según su tasa impositiva personal. Sin embargo, pueden ser elegibles para ciertas exenciones fiscales si se mantienen en cuentas específicas como ISAs o SIPPs.";
+    if (normalizedInput.includes("tax") || normalizedInput.includes("fiscal")) {
+      return "Returns from Debentures are subject to taxation at your personal tax rate. However, they may be eligible for certain tax exemptions if held within specific accounts such as ISAs or SIPPs.";
     }
     
-    if (normalizedInput.includes("retiro") || normalizedInput.includes("liquidez") || normalizedInput.includes("reembolso") || normalizedInput.includes("cancelar")) {
-      return "Los retiros anticipados están sujetos a una penalización del 2% del valor principal. Se recomienda mantener la inversión durante todo el período de 5 años para maximizar los rendimientos.";
+    if (normalizedInput.includes("withdrawal") || normalizedInput.includes("liquidity") || normalizedInput.includes("redemption") || normalizedInput.includes("cancel")) {
+      return "Early withdrawals are subject to a 2% penalty on the principal amount. It is recommended to maintain the investment for the entire 5-year period to maximize returns.";
     }
     
-    if (normalizedInput.includes("inflación") || normalizedInput.includes("poder adquisitivo")) {
-      return "La tasa fija del 4.0% está diseñada para superar la inflación proyectada de 2%. Sin embargo, si la inflación aumenta significativamente, el rendimiento real podría verse afectado.";
+    if (normalizedInput.includes("inflation") || normalizedInput.includes("purchasing power")) {
+      return "The fixed 4.0% rate is designed to exceed the projected inflation of 2%. However, if inflation increases significantly, the real return could be affected.";
     }
     
-    if (normalizedInput.includes("hola") || normalizedInput.includes("buenos días") || normalizedInput.includes("buenas tardes")) {
-      return "¡Hola! Soy su asistente financiero del Banco de Ahorros de Gibraltar. ¿En qué puedo ayudarle hoy con respecto a sus Debentures de Desarrollo Económico?";
+    if (normalizedInput.includes("hello") || normalizedInput.includes("hi") || normalizedInput.includes("good morning") || normalizedInput.includes("good afternoon")) {
+      return "Hello! I'm your financial assistant from Gibraltar Savings Bank. How can I help you today regarding your Economic Development Debentures?";
     }
     
-    if (normalizedInput.includes("gracias") || normalizedInput.includes("agradecido")) {
-      return "De nada. Estoy aquí para ayudarle con cualquier consulta sobre sus inversiones. ¿Tiene alguna otra pregunta?";
+    if (normalizedInput.includes("thank")) {
+      return "You're welcome. I'm here to help with any questions about your investments. Do you have any other questions?";
     }
     
     // Default response for unrecognized queries
-    return "Como representante del Banco de Ahorros de Gibraltar, puedo informarle que los Debentures de Desarrollo Económico a 5 años ofrecen una tasa fija del 4.0% con un valor nominal de £50,000. ¿Hay algún aspecto específico sobre el que desea más información?";
+    return "As a representative of Gibraltar Savings Bank, I can inform you that the 5-year Economic Development Debentures offer a fixed rate of 4.0% with a nominal value of £50,000. Is there any specific aspect you would like more information about?";
   };
 
   // Call OpenAI API
   const callOpenAI = async (input: string): Promise<string> => {
     if (!apiKey) {
-      setApiKeyError("Por favor, introduce una clave API de OpenAI válida");
+      setApiKeyError("Please enter a valid OpenAI API key");
       throw new Error("No API key provided");
     }
 
@@ -106,7 +106,7 @@ const FinancialChatbot = () => {
           messages: [
             {
               role: 'system',
-              content: 'Eres un asistente financiero del Banco de Ahorros de Gibraltar. Tu función es proporcionar información sobre los Debentures de Desarrollo Económico: tasa fija del 4.0%, plazo de 5 años, valor £50,000. Responde de manera profesional, clara y en español. No hables de otros productos.'
+              content: 'You are a financial assistant from Gibraltar Savings Bank. Your role is to provide information about Economic Development Debentures: fixed rate of 4.0%, 5-year term, value £50,000. Respond professionally, clearly and in English. Do not discuss other products.'
             },
             {
               role: 'user',
@@ -120,14 +120,14 @@ const FinancialChatbot = () => {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error?.message || "Error en la llamada a la API de OpenAI");
+        throw new Error(error.error?.message || "Error calling OpenAI API");
       }
 
       const data = await response.json();
       return data.choices[0].message.content;
     } catch (error) {
       console.error("Error calling OpenAI API:", error);
-      toast.error("Error al conectar con OpenAI. Usando respuesta local.");
+      toast.error("Error connecting to OpenAI. Using local response.");
       // Fallback to local response if API call fails
       return generateLocalResponse(input);
     }
@@ -135,7 +135,7 @@ const FinancialChatbot = () => {
 
   // Check if this is a conservative question
   const checkConservativeQuestion = (question: string) => {
-    const conservativeKeywords = ["riesgo", "seguro", "proteger", "garantía", "garantizado"];
+    const conservativeKeywords = ["risk", "safe", "protect", "guarantee", "guaranteed"];
     if (conservativeKeywords.some(keyword => question.toLowerCase().includes(keyword))) {
       incrementConservativeQuestions();
     }
@@ -167,7 +167,7 @@ const FinancialChatbot = () => {
       // Add fallback response if something goes wrong
       addChatMessage({ 
         role: "assistant", 
-        content: "Lo siento, hubo un problema al procesar tu consulta. Por favor, intenta de nuevo." 
+        content: "Sorry, there was a problem processing your request. Please try again." 
       });
     } finally {
       setIsLoading(false);
@@ -198,7 +198,7 @@ const FinancialChatbot = () => {
             <div className="flex items-center space-x-2">
               <Label htmlFor="apiKey" className="flex items-center gap-2">
                 <Key className="h-4 w-4" />
-                API Key de OpenAI
+                OpenAI API Key
               </Label>
               <Popover>
                 <PopoverTrigger asChild>
@@ -206,9 +206,9 @@ const FinancialChatbot = () => {
                 </PopoverTrigger>
                 <PopoverContent>
                   <p className="text-sm">
-                    Tu clave API se almacena temporalmente en la sesión del navegador
-                    y no se guarda en ninguna base de datos. Si cierras o recargas la página,
-                    tendrás que introducirla de nuevo.
+                    Your API key is temporarily stored in your browser session
+                    and is not saved in any database. If you close or reload the page,
+                    you'll need to enter it again.
                   </p>
                 </PopoverContent>
               </Popover>
@@ -236,7 +236,7 @@ const FinancialChatbot = () => {
               </Alert>
             )}
             <p className="text-xs text-muted-foreground">
-              {apiKey ? "API key configurada. Si no tienes una clave, se usarán respuestas pregeneradas." : "Sin API key. Se usarán respuestas pregeneradas."}
+              {apiKey ? "API key configured. If you don't have a key, pre-generated responses will be used." : "No API key. Pre-generated responses will be used."}
             </p>
           </div>
         </div>
@@ -245,11 +245,11 @@ const FinancialChatbot = () => {
           <ScrollArea className="flex-1 p-4 border rounded-md mb-4 bg-white" ref={scrollAreaRef}>
             {chatHistory.length === 0 ? (
               <div className="text-center text-gsb-muted p-4">
-                <p>Haz preguntas sobre tu inversión al asistente financiero.</p>
-                <p className="text-sm mt-2">Prueba con preguntas como:</p>
+                <p>Ask questions about your investment to the financial assistant.</p>
+                <p className="text-sm mt-2">Try questions like:</p>
                 <ul className="text-sm mt-1 text-gsb-primary">
-                  <li>"¿Cómo afectará la próxima subida de tasas a mi inversión?"</li>
-                  <li>"¿Cuál es el nivel de riesgo de esta inversión?"</li>
+                  <li>"How will the next rate hike affect my investment?"</li>
+                  <li>"What is the risk level of this investment?"</li>
                 </ul>
               </div>
             ) : (
@@ -280,7 +280,7 @@ const FinancialChatbot = () => {
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
               onKeyDown={handleKeyPress}
-              placeholder="Haz una pregunta sobre tu inversión..."
+              placeholder="Ask a question about your investment..."
               className="flex-1"
               disabled={isLoading}
             />
@@ -293,7 +293,7 @@ const FinancialChatbot = () => {
               ) : (
                 <Send className="h-4 w-4 mr-2" />
               )}
-              {isLoading ? "Enviando..." : "Enviar"}
+              {isLoading ? "Sending..." : "Send"}
             </Button>
           </div>
         </div>
