@@ -31,18 +31,18 @@ const DashboardHeader = () => {
         </div>
         
         <div className="flex items-center space-x-4">
-          <Button variant="ghost" size="icon" className="text-white hover:bg-[#8b2121]">
+          <Button variant="ghost" size="icon" className="text-white/70 hover:bg-transparent cursor-not-allowed" disabled>
             <Bell className="h-5 w-5" />
           </Button>
-          <Button variant="ghost" size="icon" className="text-white hover:bg-[#8b2121]">
+          <Button variant="ghost" size="icon" className="text-white/70 hover:bg-transparent cursor-not-allowed" disabled>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
               <circle cx="12" cy="12" r="10" />
               <path d="M12 8v4l3 3" />
             </svg>
           </Button>
           <div className="relative">
-            <Button variant="ghost" size="icon" className="text-white hover:bg-[#8b2121]">
-              <div className="h-6 w-6 rounded-full bg-white text-[#6b0d0d] flex items-center justify-center font-medium">
+            <Button variant="ghost" size="icon" className="text-white/70 hover:bg-transparent cursor-not-allowed" disabled>
+              <div className="h-6 w-6 rounded-full bg-white/70 text-[#6b0d0d] flex items-center justify-center font-medium">
                 2
               </div>
             </Button>
