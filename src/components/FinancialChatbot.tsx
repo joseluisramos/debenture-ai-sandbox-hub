@@ -5,13 +5,24 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send } from "lucide-react";
+import { Send, Eye, EyeOff, Key } from "lucide-react";
 import { toast } from "@/components/ui/sonner";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Form, FormItem, FormLabel, FormControl, FormDescription } from "@/components/ui/form";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const FinancialChatbot = () => {
   const { chatHistory, addChatMessage, incrementConservativeQuestions } = useFinance();
   const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [apiKey, setApiKey] = useState(() => {
+    // Try to get the API key from sessionStorage on component mount
+    return sessionStorage.getItem("openai_api_key") || "";
+  });
+  const [showApiKey, setShowApiKey] = useState(false);
+  const [apiKeyError, setApiKeyError] = useState("");
   
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
@@ -25,8 +36,18 @@ const FinancialChatbot = () => {
     }
   }, [chatHistory]);
 
+  // Save API key to sessionStorage when it changes
+  useEffect(() => {
+    if (apiKey) {
+      sessionStorage.setItem("openai_api_key", apiKey);
+      setApiKeyError("");
+    } else {
+      sessionStorage.removeItem("openai_api_key");
+    }
+  }, [apiKey]);
+
   // Generate a bot response based on user input
-  const generateBotResponse = (input: string): string => {
+  const generateLocalResponse = (input: string): string => {
     const normalizedInput = input.toLowerCase();
     
     // Check for common questions and provide appropriate responses
@@ -66,32 +87,92 @@ const FinancialChatbot = () => {
     return "Como representante del Banco de Ahorros de Gibraltar, puedo informarle que los Debentures de Desarrollo Económico a 5 años ofrecen una tasa fija del 4.0% con un valor nominal de £50,000. ¿Hay algún aspecto específico sobre el que desea más información?";
   };
 
+  // Call OpenAI API
+  const callOpenAI = async (input: string): Promise<string> => {
+    if (!apiKey) {
+      setApiKeyError("Por favor, introduce una clave API de OpenAI válida");
+      throw new Error("No API key provided");
+    }
+
+    try {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            {
+              role: 'system',
+              content: 'Eres un asistente financiero del Banco de Ahorros de Gibraltar. Tu función es proporcionar información sobre los Debentures de Desarrollo Económico: tasa fija del 4.0%, plazo de 5 años, valor £50,000. Responde de manera profesional, clara y en español. No hables de otros productos.'
+            },
+            {
+              role: 'user',
+              content: input
+            }
+          ],
+          temperature: 0.7,
+          max_tokens: 300
+        })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error?.message || "Error en la llamada a la API de OpenAI");
+      }
+
+      const data = await response.json();
+      return data.choices[0].message.content;
+    } catch (error) {
+      console.error("Error calling OpenAI API:", error);
+      toast.error("Error al conectar con OpenAI. Usando respuesta local.");
+      // Fallback to local response if API call fails
+      return generateLocalResponse(input);
+    }
+  };
+
+  // Check if this is a conservative question
+  const checkConservativeQuestion = (question: string) => {
+    const conservativeKeywords = ["riesgo", "seguro", "proteger", "garantía", "garantizado"];
+    if (conservativeKeywords.some(keyword => question.toLowerCase().includes(keyword))) {
+      incrementConservativeQuestions();
+    }
+  };
+
   // Send message handler
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!userInput.trim()) return;
 
     // Add user message to chat
     addChatMessage({ role: "user", content: userInput });
-
-    // Check if this is a conservative question
-    const conservativeKeywords = ["riesgo", "seguro", "proteger", "garantía", "garantizado"];
-    if (conservativeKeywords.some(keyword => userInput.toLowerCase().includes(keyword))) {
-      incrementConservativeQuestions();
-    }
-
+    checkConservativeQuestion(userInput);
     setIsLoading(true);
 
-    // Simulate a delay for more realistic bot response
-    setTimeout(() => {
-      // Generate response
-      const botResponse = generateBotResponse(userInput);
+    try {
+      let botResponse;
+      
+      // Use OpenAI API if key is provided, otherwise use local response
+      if (apiKey) {
+        botResponse = await callOpenAI(userInput);
+      } else {
+        botResponse = generateLocalResponse(userInput);
+      }
       
       // Add AI response to chat
       addChatMessage({ role: "assistant", content: botResponse });
-      
+    } catch (error) {
+      console.error("Error generating response:", error);
+      // Add fallback response if something goes wrong
+      addChatMessage({ 
+        role: "assistant", 
+        content: "Lo siento, hubo un problema al procesar tu consulta. Por favor, intenta de nuevo." 
+      });
+    } finally {
       setIsLoading(false);
       setUserInput("");
-    }, 800);
+    }
   };
 
   // Handle key press for Enter key
@@ -101,18 +182,71 @@ const FinancialChatbot = () => {
     }
   };
 
+  // Toggle API key visibility
+  const toggleApiKeyVisibility = () => {
+    setShowApiKey(!showApiKey);
+  };
+
   return (
     <Card className="w-full">
       <CardHeader className="bg-gsb-headerBg text-gsb-primary flex flex-row justify-between items-center">
         <CardTitle>2. Your AI Chat</CardTitle>
       </CardHeader>
       <CardContent className="p-4">
+        <div className="mb-4">
+          <div className="flex flex-col space-y-2">
+            <div className="flex items-center space-x-2">
+              <Label htmlFor="apiKey" className="flex items-center gap-2">
+                <Key className="h-4 w-4" />
+                API Key de OpenAI
+              </Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0">?</Button>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <p className="text-sm">
+                    Tu clave API se almacena temporalmente en la sesión del navegador
+                    y no se guarda en ninguna base de datos. Si cierras o recargas la página,
+                    tendrás que introducirla de nuevo.
+                  </p>
+                </PopoverContent>
+              </Popover>
+            </div>
+            <div className="flex gap-2">
+              <Input
+                type={showApiKey ? "text" : "password"}
+                id="apiKey"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                placeholder="sk-..."
+                className="flex-1"
+              />
+              <Button 
+                variant="outline" 
+                onClick={toggleApiKeyVisibility} 
+                type="button"
+              >
+                {showApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </Button>
+            </div>
+            {apiKeyError && (
+              <Alert variant="destructive" className="py-2">
+                <AlertDescription>{apiKeyError}</AlertDescription>
+              </Alert>
+            )}
+            <p className="text-xs text-muted-foreground">
+              {apiKey ? "API key configurada. Si no tienes una clave, se usarán respuestas pregeneradas." : "Sin API key. Se usarán respuestas pregeneradas."}
+            </p>
+          </div>
+        </div>
+
         <div className="flex flex-col h-[300px]">
           <ScrollArea className="flex-1 p-4 border rounded-md mb-4 bg-white" ref={scrollAreaRef}>
             {chatHistory.length === 0 ? (
               <div className="text-center text-gsb-muted p-4">
-                <p>Ask your AI chat about your investment.</p>
-                <p className="text-sm mt-2">Try questions like:</p>
+                <p>Haz preguntas sobre tu inversión al asistente financiero.</p>
+                <p className="text-sm mt-2">Prueba con preguntas como:</p>
                 <ul className="text-sm mt-1 text-gsb-primary">
                   <li>"¿Cómo afectará la próxima subida de tasas a mi inversión?"</li>
                   <li>"¿Cuál es el nivel de riesgo de esta inversión?"</li>
