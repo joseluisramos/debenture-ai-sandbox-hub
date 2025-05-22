@@ -5,24 +5,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send } from "lucide-react";
+import { Send, Key, X } from "lucide-react";
 import { toast } from "@/components/ui/sonner";
-
-// Respuestas predefinidas para simular la interacción con la API
-const predefResponses: Record<string, string> = {
-  default: "Como asesor financiero virtual, puedo ofrecerte información sobre diversos productos financieros y estrategias de inversión. ¿En qué puedo ayudarte hoy?",
-  bonds: "Los bonos son instrumentos de deuda emitidos por gobiernos o empresas. El Banco de Ahorros de Gibraltar ofrece bonos con rendimientos competitivos y diferentes períodos de vencimiento según tus necesidades de inversión.",
-  debenture: "Una obligación o 'debenture' es un instrumento de deuda a largo plazo utilizado por gobiernos y grandes corporaciones. A diferencia de otros bonos, no están garantizados por activos específicos sino por la reputación crediticia general del emisor. El Debenture de 5 años que tienes ofrece un cupón fijo del 4% anual hasta su vencimiento.",
-  interest: "Los tipos de interés afectan directamente al valor de los bonos. Cuando los tipos suben, el valor de mercado de los bonos existentes tiende a bajar. Tu Debenture de Desarrollo Económico a 5 años tiene una tasa fija, lo que significa que los pagos de intereses permanecen constantes independientemente de los cambios en el mercado.",
-  risk: "Tu perfil parece ser conservador. Los Debentures del Banco de Ahorros de Gibraltar están respaldados por el gobierno y tienen un riesgo relativamente bajo en comparación con otras inversiones. Sin embargo, toda inversión conlleva algún nivel de riesgo, incluyendo la posible pérdida de capital si necesitas vender antes del vencimiento en un entorno de tipos de interés más altos.",
-  maturity: "Tu Debenture de 5 años vence en junio de 2028. Al vencimiento, recibirás el valor nominal completo de 50,000. Si vendes antes del vencimiento, el valor estará sujeto a las condiciones del mercado en ese momento.",
-  inflation: "La inflación puede erosionar el valor real de los retornos fijos. Con una tasa de cupón del 4% en tu Debenture, estás protegido contra la inflación siempre que ésta se mantenga por debajo de ese nivel. El simulador muestra que con una inflación del 2%, tus ganancias reales siguen siendo positivas.",
-};
+import { Label } from "@/components/ui/label";
 
 const FinancialChatbot = () => {
   const { chatHistory, addChatMessage, incrementConservativeQuestions } = useFinance();
   const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [apiKey, setApiKey] = useState("");
+  const [showApiInput, setShowApiInput] = useState(false);
+  const [storedApiKey, setStoredApiKey] = useState(() => {
+    const savedKey = localStorage.getItem("openai_api_key");
+    return savedKey || "";
+  });
+  
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when chat history changes
@@ -35,9 +32,34 @@ const FinancialChatbot = () => {
     }
   }, [chatHistory]);
 
+  // Save API key to localStorage when it changes
+  const handleSaveApiKey = () => {
+    if (apiKey.trim()) {
+      localStorage.setItem("openai_api_key", apiKey);
+      setStoredApiKey(apiKey);
+      setShowApiInput(false);
+      toast.success("API key saved successfully");
+    } else {
+      toast.error("Please enter a valid API key");
+    }
+  };
+
+  // Handle removing API key
+  const handleRemoveApiKey = () => {
+    localStorage.removeItem("openai_api_key");
+    setStoredApiKey("");
+    setApiKey("");
+    toast.success("API key removed");
+  };
+
   // Send message handler
   const handleSendMessage = async () => {
     if (!userInput.trim()) return;
+    if (!storedApiKey) {
+      toast.error("Please add your OpenAI API key first");
+      setShowApiInput(true);
+      return;
+    }
 
     // Add user message to chat
     addChatMessage({ role: "user", content: userInput });
@@ -51,37 +73,52 @@ const FinancialChatbot = () => {
     setIsLoading(true);
 
     try {
-      // Simulate API call with local response matching
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulated delay
-      
-      // Find appropriate response based on keywords in the user question
-      let aiResponse = predefResponses.default;
-      const input = userInput.toLowerCase();
-      
-      if (input.includes("bono") || input.includes("bond")) {
-        aiResponse = predefResponses.bonds;
-      } else if (input.includes("debenture") || input.includes("obligación")) {
-        aiResponse = predefResponses.debenture;
-      } else if (input.includes("interés") || input.includes("tasa") || input.includes("rate")) {
-        aiResponse = predefResponses.interest;
-      } else if (input.includes("riesgo") || input.includes("risk")) {
-        aiResponse = predefResponses.risk;
-      } else if (input.includes("vencimiento") || input.includes("maturity")) {
-        aiResponse = predefResponses.maturity;
-      } else if (input.includes("inflación") || input.includes("inflation")) {
-        aiResponse = predefResponses.inflation;
+      // Call OpenAI API
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${storedApiKey}`,
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [
+            {
+              role: "system",
+              content: "Eres un asistente financiero especializado en productos de inversión del Banco de Ahorros de Gibraltar. Proporciona información precisa y consejos sobre los Debentures de Desarrollo Económico que ofrece el banco, con un enfoque en sus características, riesgos y beneficios. Mantén las respuestas claras, concisas y enfocadas en el ámbito financiero."
+            },
+            ...chatHistory.map(msg => ({
+              role: msg.role,
+              content: msg.content
+            })),
+            {
+              role: "user",
+              content: userInput
+            }
+          ],
+          temperature: 0.7,
+          max_tokens: 200
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error?.message || "Error calling OpenAI API");
       }
+
+      const data = await response.json();
+      const aiResponse = data.choices[0].message.content;
       
       // Add AI response to chat
       addChatMessage({ role: "assistant", content: aiResponse });
     } catch (error) {
       console.error("Error en el procesamiento del mensaje:", error);
-      toast.error("No se pudo procesar tu consulta. Por favor, inténtalo de nuevo.");
+      toast.error(error instanceof Error ? error.message : "Error al procesar tu consulta");
       
       // Add error response to chat
       addChatMessage({ 
         role: "assistant", 
-        content: "Lo siento, no pude procesar tu consulta en este momento. Por favor, inténtalo de nuevo más tarde." 
+        content: "Lo siento, no pude procesar tu consulta en este momento. Por favor, verifica tu API key o inténtalo de nuevo más tarde." 
       });
     } finally {
       setIsLoading(false);
@@ -98,10 +135,48 @@ const FinancialChatbot = () => {
 
   return (
     <Card className="w-full">
-      <CardHeader className="bg-gsb-headerBg text-gsb-primary">
+      <CardHeader className="bg-gsb-headerBg text-gsb-primary flex flex-row justify-between items-center">
         <CardTitle>2. Your AI Chat</CardTitle>
+        <Button 
+          variant="ghost" 
+          size="sm"
+          onClick={() => setShowApiInput(!showApiInput)}
+          className="flex items-center gap-1"
+        >
+          <Key className="h-4 w-4" />
+          {storedApiKey ? "Change API Key" : "Add API Key"}
+        </Button>
       </CardHeader>
       <CardContent className="p-4">
+        {showApiInput && (
+          <div className="mb-4 p-3 border rounded-md bg-gray-50">
+            <Label htmlFor="apiKey" className="mb-1 block">OpenAI API Key:</Label>
+            <div className="flex gap-2">
+              <Input
+                id="apiKey"
+                type="password"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                placeholder="sk-..."
+                className="flex-1"
+              />
+              <Button onClick={handleSaveApiKey} size="sm">Save</Button>
+              {storedApiKey && (
+                <Button 
+                  onClick={handleRemoveApiKey} 
+                  variant="outline" 
+                  size="sm"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              Tu API key se guardará solo en tu navegador y nunca será enviada a nuestros servidores.
+            </p>
+          </div>
+        )}
+        
         <div className="flex flex-col h-[300px]">
           <ScrollArea className="flex-1 p-4 border rounded-md mb-4 bg-white" ref={scrollAreaRef}>
             {chatHistory.length === 0 ? (
@@ -141,11 +216,14 @@ const FinancialChatbot = () => {
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
               onKeyDown={handleKeyPress}
-              placeholder="Ask a question about your investment..."
+              placeholder={storedApiKey ? "Ask a question about your investment..." : "Add your OpenAI API key first"}
               className="flex-1"
-              disabled={isLoading}
+              disabled={isLoading || !storedApiKey}
             />
-            <Button onClick={handleSendMessage} disabled={isLoading || !userInput.trim()}>
+            <Button 
+              onClick={handleSendMessage} 
+              disabled={isLoading || !userInput.trim() || !storedApiKey}
+            >
               {isLoading ? (
                 <span className="h-4 w-4 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
               ) : (
@@ -154,6 +232,14 @@ const FinancialChatbot = () => {
               {isLoading ? "Sending..." : "Send"}
             </Button>
           </div>
+          {!storedApiKey && !showApiInput && (
+            <p className="text-xs text-center text-muted-foreground mt-2">
+              <Button variant="link" onClick={() => setShowApiInput(true)}>
+                Añade tu API key de OpenAI
+              </Button> 
+              para utilizar el chat
+            </p>
+          )}
         </div>
       </CardContent>
     </Card>
