@@ -62,7 +62,7 @@ const LiquidityForecasting = () => {
 
   return (
     <Card className="w-full">
-      <CardHeader className="bg-gsb-secondary text-white">
+      <CardHeader className="bg-gsb-headerBg text-gsb-primary">
         <CardTitle className="text-lg">5. Liquidity Forecasting & Rebalancing</CardTitle>
       </CardHeader>
       <CardContent className="p-4 space-y-6">

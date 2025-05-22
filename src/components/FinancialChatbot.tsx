@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useFinance } from "@/context/FinanceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -71,7 +72,7 @@ const FinancialChatbot = () => {
 
   return (
     <Card className="w-full">
-      <CardHeader className="bg-gsb-secondary text-white">
+      <CardHeader className="bg-gsb-headerBg text-gsb-primary">
         <CardTitle className="text-lg">2. Your AI Chat</CardTitle>
       </CardHeader>
       <CardContent className="p-4">

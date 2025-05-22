@@ -20,7 +20,7 @@ const VideoReport = () => {
 
   return (
     <Card className="w-full">
-      <CardHeader className="bg-gsb-primary text-white">
+      <CardHeader className="bg-gsb-headerBg text-gsb-primary">
         <CardTitle className="text-lg">6. Personalized Video-Audio Portfolio Report</CardTitle>
       </CardHeader>
       <CardContent className="p-4 space-y-4">

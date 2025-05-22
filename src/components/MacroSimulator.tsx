@@ -110,7 +110,7 @@ const MacroSimulator = () => {
 
   return (
     <Card className="w-full">
-      <CardHeader className="bg-gsb-primary text-white">
+      <CardHeader className="bg-gsb-headerBg text-gsb-primary">
         <CardTitle className="text-lg">1. Dynamic Macro Scenario Simulator</CardTitle>
       </CardHeader>
       <CardContent className="p-4 space-y-6">

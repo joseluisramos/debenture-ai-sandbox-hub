@@ -21,7 +21,7 @@ const OpportunityAlerts = () => {
 
   return (
     <Card className="w-full">
-      <CardHeader className="bg-gsb-primary text-white">
+      <CardHeader className="bg-gsb-headerBg text-gsb-primary">
         <CardTitle className="text-lg">3. Unexpected Opportunity Alerts</CardTitle>
       </CardHeader>
       <CardContent className="p-4">
